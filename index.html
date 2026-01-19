@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramienta Liquidadora de Sueldos | CDN Sercotec Temuco</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/kgDCs5xX/imagen-2026-01-08-145205602-preview-rev-1.png">
+
+    <style>
+        /* === IDENTIDAD VISUAL === */
+        :root {
+            --primary-blue: #004B8D;
+            --primary-dark: #1d3557;
+            --accent-red: #E30613;
+            --light-blue: #ebf2fa;
+            --text-main: #343a40;
+            --text-muted: #6c757d;
+            --bg-body: #f8f9fa;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa); /* Gradiente sutil */
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === HEADER === */
+        .navbar-custom {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--accent-red);
+            padding: 1rem 0; /* Más espacio */
+        }
+        .brand-text h1 { font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--primary-blue); }
+        .brand-text p { font-size: 0.85rem; margin: 0; color: var(--text-muted); }
+
+        /* === CARDS === */
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); /* Sombra más suave */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 20px;
+        }
+        .card-custom:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+
+        .card-header-custom {
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 1rem 1.25rem; /* Más espacio */
+            font-weight: 700; /* Más grueso */
+            font-size: 1rem; /* Más grande */
+            color: var(--primary-blue);
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* === FORMS & TITLES === */
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--light-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.25rem; /* Más espacio */
+        }
+
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #495057; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 75, 141, 0.1);
+        }
+        .input-group-text { background-color: #e9ecef; border: 1px solid #ced4da; color: #495057; }
+
+        /* === BOTONES === */
+        .btn-primary-custom {
+            background-color: var(--primary-blue);
+            border: none;
+            padding: 10px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-primary-custom:hover { background-color: var(--primary-dark); }
+        .btn-outline-custom { border: 1px solid #ccc; color: #555; font-weight: 500; }
+        .btn-outline-custom:hover { background-color: #f0f0f0; color: #333; }
+
+        /* === TABLA LIQUIDACION === */
+        .table-liquidacion {
+            font-size: 0.9rem; /* Fuente base más grande */
+        }
+        .table-liquidacion th {
+            background-color: var(--light-blue);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            text-align: left;
+            border-bottom: 2px solid #fff;
+            padding: 10px 8px;
+        }
+        .table-liquidacion td {
+            padding: 10px 8px; /* Más padding vertical */
+            border-color: #f0f0f0;
+            vertical-align: middle;
+        }
+        .section-header {
+            background-color: var(--primary-dark) !important;
+            color: white !important;
+            font-weight: bold;
+            text-align: left !important;
+            font-size: 0.9rem;
+        }
+        .total-row {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .liquido-row {
+            background-color: var(--primary-blue) !important;
+            color: white !important;
+            font-weight: bold;
+            font-size: 1.1rem; /* Más grande */
+        }
+        .cost-highlight-row {
+            background-color: var(--light-blue) !important;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            border-top: 2px solid var(--primary-blue);
+        }
+
+        /* === FOOTER === */
+        .footer-custom {
+            margin-top: auto !important;
+            background-color: #212529;
+            color: #ccc;
+            padding: 40px 0 20px;
+            font-size: 0.9rem;
+            border-top: 5px solid var(--accent-red);
+        }
+        .footer-title { color: white; font-weight: 700; margin-bottom: 15px; font-size: 1.1rem; }
+        .footer-link { color: #ccc; text-decoration: none; transition: color 0.2s; display: block; margin-bottom: 8px; }
+        .footer-link:hover { color: white; text-decoration: none; }
+        .footer-social a { color: white; font-size: 3.0rem; margin-right: 15px; transition: opacity 0.2s; }
+        .footer-social a:hover { opacity: 0.7; }
+        .footer-divider { border-color: #444; margin: 20px 0; }
+
+        /* === IMPRESION === */
+        .print-only { display: none; }
+        
+        @media print {
+            @page { size: portrait; margin: 1cm; }
+            .no-print { display: none !important; }
+            body { background: white; font-size: 11pt; display: block; }
+            
+            /* Ocultar columnas de ingreso de datos y tarjetas de cálculo intermedio */
+            .col-lg-4 { display: none; }
+            .col-lg-8 .card-custom:not(:last-child) { display: none; }
+            .col-lg-8 { width: 100% !important; flex: 0 0 100%; max-width: 100%; }
+            
+            /* Estilos específicos para la tarjeta de liquidación */
+            .card-custom { box-shadow: none; border: none; margin: 0; padding: 0; }
+            .card-header-custom { display: none; } /* Ocultar encabezado de tarjeta con botones */
+            .card-body { padding: 0 !important; }
+            
+            /* Mostrar encabezado de impresión */
+            .print-only { display: block; margin-bottom: 2rem; }
+            
+            .table-liquidacion th { background-color: #eee !important; color: black !important; }
+            .table-liquidacion { border: 1px solid #dee2e6; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="navbar navbar-custom sticky-top no-print">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center">
+            <img src="https://www.sercotec.cl/centros-de-negocios/wp-content/uploads/sites/4/2020/09/la-araucania-temuco-cdn-logo.png" alt="Sercotec" height="85" class="me-3">
+            <div class="brand-text border-start ps-3 border-2">
+                <h1 class="h5 mb-0 fw-bold" style="color: var(--primary-blue);">Herramienta Liquidación de Sueldos</h1>
+                <p class="small mb-0 text-muted">Gestión de Remuneraciones</p>
+            </div>
+        </div>
+        <div class="d-flex gap-2 no-print">
+            <button class="btn btn-outline-secondary btn-sm" onclick="limpiarFormulario()"><i class="bi bi-eraser"></i> Limpiar</button>
+            <button class="btn btn-primary-custom btn-sm text-white" onclick="imprimirPDF()"><i class="bi bi-file-earmark-pdf"></i> Imprimir / PDF</button>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container-fluid px-4 py-4">
+    <div class="row g-4">
+
+        <!-- PANEL IZQUIERDO: DATOS DEL TRABAJADOR -->
+        <div class="col-lg-4 no-print">
+            <div class="card-custom">
+                <div class="card-header-custom">
+                    <span><i class="bi bi-person-badge"></i> Datos del Trabajador</span>
+                </div>
+                <div class="card-body p-3">
+                    <form id="trabajadorForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Empresa</label>
+                            <input type="text" class="form-control" id="empresa" placeholder="Nombre de la empresa">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">RUT Empresa</label>
+                            <input type="text" class="form-control" id="rutEmpresa" placeholder="12.345.678-9" onkeyup="formatoRutInput(this)">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Dirección Empresa</label>
+                            <input type="text" class="form-control" id="direccionEmpresa" placeholder="Dirección">
+                        </div>
+
+                        <hr class="my-3">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre Trabajador</label>
+                            <input type="text" class="form-control" id="nombreTrabajador" placeholder="Nombre completo">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">RUT Trabajador</label>
+                            <input type="text" class="form-control" id="rutTrabajador" placeholder="12.345.678-9" onkeyup="formatoRutInput(this)">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Cargo</label>
+                            <input type="text" class="form-control" id="cargo" placeholder="Ej: Vendedor">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tipo de Contrato</label>
+                            <select class="form-select" id="tipoContrato" onchange="actualizarTipoContrato()">
+                                <option value="indefinido">Indefinido</option>
+                                <option value="plazoFijo">Plazo Fijo</option>
+                                <option value="partTime">Part-time (Variable)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mes Liquidación</label>
+                            <input type="month" class="form-control" id="mesLiquidacion">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO: CALCULOS -->
+        <div class="col-lg-8">
+
+            <!-- SECCION HABERES -->
+            <div class="card-custom">
+                <div class="card-header-custom">
+                    <span><i class="bi bi-cash-stack"></i> Haberes (Ingresos)</span>
+                </div>
+                <div class="card-body p-3">
+                    <!-- Configuración -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Días Trabajados</label>
+                            <input type="number" class="form-control" id="diasTrabajados" value="30" oninput="calcular()">
+                        </div>
+                        <div class="col-md-4" id="divJornadaSemanal">
+                            <label class="form-label">Jornada Semanal</label>
+                            <select class="form-select" id="jornadaSemanal" onchange="calcular()">
+                                <option value="45">45 Horas (Antigua)</option>
+                                <option value="44" selected>44 Horas</option>
+                                <option value="42">42 Horas</option>
+                                <option value="40">40 Horas (Ley 40h)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4" id="divHorasPartTime" style="display: none;">
+                            <label class="form-label">Horas (Part-time)</label>
+                            <input type="number" class="form-control" id="horasPartTime" value="20" min="1" max="44" oninput="calcularSueldoPartTime()">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Gratificación (Utilidades)</label>
+                            <select class="form-select" id="incluirGratificacion" onchange="calcular()">
+                                <option value="true" selected>Sí (Pagar Art. 50)</option>
+                                <option value="false">No (Sin Utilidades)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h6 class="section-title">HABERES IMPONIBLES</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Sueldo Base</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="sueldoBase" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Horas Extras (Cant.)</label>
+                            <input type="number" class="form-control" id="horasExtras" value="0" oninput="calcular()">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Recargo %</label>
+                            <select class="form-select" id="factorHoraExtra" onchange="calcular()">
+                                <option value="1.5">50% (Legal)</option>
+                                <option value="2.0">100% (Festivo)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Valor Hora Extra</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">$</span>
+                                <input type="text" class="form-control bg-light" id="valorHoraExtra" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted" style="font-size: 0.75rem;">Gratificación Legal (25%)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">$</span>
+                                <input type="text" class="form-control bg-light" id="gratificacion" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Comisión</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="comision" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Bonos Gestión/Producción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="bonos" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="section-title">HABERES NO IMPONIBLES</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Asignación Movilización</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="movilizacion" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Asignación Colación</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="colacion" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Viáticos</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="viaticos" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Desgaste Herramientas / Caja</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="desgasteHerramientas" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCION PREVISION -->
+            <div class="card-custom mt-3">
+                <div class="card-header-custom">
+                    <span><i class="bi bi-shield-check"></i> Previsión y Salud</span>
+                </div>
+                <div class="card-body p-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">AFP</label>
+                            <select class="form-select" id="afp" onchange="calcular()">
+                                <option value="11.44">CAPITAL (11.44%)</option>
+                                <option value="11.27">HABITAT (11.27%)</option>
+                                <option value="11.44">PROVIDA (11.44%)</option>
+                                <option value="11.16">CUPRUM (11.16%)</option>
+                                <option value="11.44">PLANVITAL (11.44%)</option>
+                                <option value="11.44">MODELO (11.44%)</option>
+                                <option value="11.44">UNO (11.44%)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Salud</label>
+                            <select class="form-select" id="salud" onchange="calcular()">
+                                <option value="7">FONASA (7%)</option>
+                                <option value="7.4">ISAPRE (Prom. 7.4%)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cargas Familiares</label>
+                            <input type="number" class="form-control" id="cargas" value="0" min="0" oninput="calcular()">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Tasa Adic. Accidentes (Mutual) %</label>
+                            <input type="number" class="form-control" id="tasaMutual" value="0" step="0.01" placeholder="Ej: 2.55" oninput="calcular()">
+                            <div class="form-text text-muted" style="font-size: 0.75rem;">Base legal 0.93% + Cotización Adicional Diferenciada</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCION DESCUENTOS ADICIONALES -->
+            <div class="card-custom mt-3">
+                <div class="card-header-custom">
+                    <span><i class="bi bi-dash-circle"></i> Descuentos Adicionales</span>
+                </div>
+                <div class="card-body p-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Préstamo Caja</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="prestamoCaja" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Préstamo Empresa</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="prestamoEmpresa" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Anticipos</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="anticipos" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Retención Judicial</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="retencionJudicial" placeholder="0" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIQUIDACION FINAL -->
+            <div class="card-custom mt-3">
+                <div class="card-header-custom">
+                    <span><i class="bi bi-file-earmark-text"></i> Liquidación de Sueldo</span>
+                    <button class="btn btn-sm btn-primary-custom text-white no-print" onclick="calcular()">
+                        <i class="bi bi-calculator"></i> Calcular
+                    </button>
+                </div>
+                <div class="card-body p-3">
+                    <!-- ENCABEZADO SOLO PARA IMPRESIÓN -->
+                    <div class="print-only">
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h5 class="fw-bold text-uppercase" style="color: var(--primary-blue); border-bottom: 2px solid var(--accent-red); padding-bottom: 5px;">Empleador</h5>
+                                <ul class="list-unstyled small mt-2">
+                                    <li class="mb-1"><strong>Razón Social:</strong> <span id="print_empresa"></span></li>
+                                    <li class="mb-1"><strong>R.U.T:</strong> <span id="print_rutEmpresa"></span></li>
+                                    <li class="mb-1"><strong>Dirección:</strong> <span id="print_direccion"></span></li>
+                                </ul>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="fw-bold text-uppercase" style="color: var(--primary-blue); border-bottom: 2px solid var(--accent-red); padding-bottom: 5px;">Trabajador</h5>
+                                <ul class="list-unstyled small mt-2">
+                                    <li class="mb-1"><strong>Nombre:</strong> <span id="print_nombreTrabajador"></span></li>
+                                    <li class="mb-1"><strong>R.U.T:</strong> <span id="print_rutTrabajador"></span></li>
+                                    <li class="mb-1"><strong>Cargo:</strong> <span id="print_cargo"></span></li>
+                                    <li class="mb-1"><strong>Tipo Contrato:</strong> <span id="print_tipoContrato"></span></li>
+                                    <li class="mb-1"><strong>Días Trabajados:</strong> <span id="print_diasTrabajados"></span></li>
+                                    <li class="mb-1"><strong>Fecha Liquidación:</strong> <span id="print_fecha"></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <h4 class="text-center fw-bold mb-4">LIQUIDACIÓN DE SUELDO</h4>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-liquidacion table-bordered mb-0">
+                            <tbody id="tablaLiquidacion">
+                                <!-- Se llenará dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<footer class="footer-custom no-print">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="footer-title">Síguenos</h5>
+                
+                <div class="footer-social mt-3">
+                    <a href="https://www.instagram.com/cdntemuco?igsh=N3A3enRscWc4bzFw" target="_blank"><i class="bi bi-instagram"></i></a>
+                    <a href="https://www.facebook.com/cdnsercotectemuco" target="_blank"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.sercotec.cl/centros-de-negocios/centro-de-desarrollo-de-negocios-temuco%E2%80%8B/" target="_blank"><i class="bi bi-globe"></i></a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5 class="footer-title">Contacto</h5>
+                <p class="mb-2"><i class="bi bi-geo-alt me-2 text-danger"></i> D. Portales N°806 - 4° Piso, Temuco</p>
+                <p class="mb-2"><i class="bi bi-envelope me-2 text-danger"></i> centro.temuco@centrossercotec.cl</p>
+                <p class="mb-2"><i class="bi bi-telephone me-2 text-danger"></i> +56 45 2 596 773</p>
+                <p class="mb-2"><i class="bi bi-clock me-2 text-danger"></i> Lun - Vie: 09:00 - 18:00</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5 class="footer-title">Enlaces de Interés</h5>
+                <a href="https://www.sercotec.cl" class="footer-link">Sitio Web Sercotec</a>
+                <a href="https://capacitacion.sercotec.cl" class="footer-link">Portal de Capacitación</a>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <small>&copy; 2026 - Centro de Negocios Sercotec Temuco. Todos los derechos reservados.</small>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                <img src="https://www.sercotec.cl/wp-content/uploads/2018/08/logo.png" alt="Sercotec Blanco" height="30" style="opacity: 0.6;">
+            </div>
+        </div>
+    </div>
+
+    <button onclick="alert('Consideración: Los resultados son estimativos y de caracter ilustrativo, no representan una realidad exacta sobre la liquidación de los sueldos, sea cauteloso con lo aqui mostrado. Además, si te gustó mi sitio o necesitas ayuda, contáctame a: personalinvestments.live@gmail.com. Ten un buen día :)')" 
+            class="btn btn-light border shadow-sm no-print"
+            style="position: fixed; bottom: 10px; right: 10px; z-index: 9999; border-radius: 20px; font-size: 11px; padding: 4px 10px; opacity: 0.9;">
+        <i class="bi bi-envelope-heart text-danger"></i> Info
+    </button>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// === FUNCIONES DE FORMATO ===
+function formatoMonedaInput(input) {
+    let valor = input.value.replace(/[^0-9]/g, '');
+    if (valor === '') {
+        input.value = '';
+        return;
+    }
+    input.value = parseInt(valor).toLocaleString('es-CL');
+}
+
+function formatoRutInput(input) {
+    // 1. Limpiar y mantener solo números y K
+    let rut = input.value.replace(/[^0-9kK]/g, '');
+
+    // 2. Si hay menos de 2 caracteres, no formatear aún
+    if (rut.length < 2) {
+        input.value = rut;
+        return;
+    }
+
+    // 3. Separar cuerpo y dígito verificador
+    let cuerpo = rut.slice(0, -1);
+    let dv = rut.slice(-1);
+
+    // 4. Formatear el cuerpo con puntos de mil y unir con el DV
+    input.value = new Intl.NumberFormat('es-CL').format(cuerpo) + '-' + dv.toUpperCase();
+}
+
+function obtenerValor(id) {
+    let valor = document.getElementById(id).value.replace(/[^0-9]/g, '');
+    return valor === '' ? 0 : parseInt(valor);
+}
+
+function formatoMoneda(numero) {
+    return '$' + Math.round(numero).toLocaleString('es-CL');
+}
+
+// === CALCULOS PRINCIPALES ===
+function calcular() {
+    // Obtener valores de haberes
+    const sueldoBase = obtenerValor('sueldoBase');
+    const horasExtras = parseInt(document.getElementById('horasExtras').value) || 0;
+    const tipoContrato = document.getElementById('tipoContrato').value;
+    
+    let jornadaSemanal;
+    if (tipoContrato === 'partTime') {
+        jornadaSemanal = parseFloat(document.getElementById('horasPartTime').value) || 44;
+    } else {
+        jornadaSemanal = parseInt(document.getElementById('jornadaSemanal').value);
+    }
+
+    const factorHoraExtra = parseFloat(document.getElementById('factorHoraExtra').value);
+    // Calcular valor hora extra automáticamente
+    // Fórmula Legal: (Sueldo * 7 * Factor) / (30 * Jornada)
+    // Se usa la fórmula unificada para evitar errores de redondeo intermedios y asegurar precisión en Part-Time
+    const valorHoraExtra = jornadaSemanal > 0 ? Math.round((sueldoBase * 7 * factorHoraExtra) / (30 * jornadaSemanal)) : 0;
+    
+    // Mostrar valor calculado
+    document.getElementById('valorHoraExtra').value = formatoMoneda(valorHoraExtra).replace('$', '');
+
+    const comision = obtenerValor('comision');
+    const bonos = obtenerValor('bonos');
+    const movilizacion = obtenerValor('movilizacion');
+    const colacion = obtenerValor('colacion');
+    const viaticos = obtenerValor('viaticos');
+    const desgasteHerramientas = obtenerValor('desgasteHerramientas');
+
+    // Calcular total horas extras
+    const totalHorasExtras = horasExtras * valorHoraExtra;
+
+    // Calcular gratificación legal (25% de los haberes imponibles)
+    // Tope legal: 4.75 * IMM / 12. Usando IMM de $539.000 (ref. 2026), el tope es $213.354.
+    const topeGratificacion = 213354;
+    const incluirGratificacion = document.getElementById('incluirGratificacion').value === 'true';
+    let gratificacion = 0;
+
+    if (incluirGratificacion) {
+        // La base incluye: Sueldo Base + Horas Extras + Comisiones + Bonos
+        const baseGratificacion = sueldoBase + totalHorasExtras + comision + bonos;
+        const calculo25 = Math.round(baseGratificacion * 0.25);
+
+        if (calculo25 > topeGratificacion) {
+            gratificacion = topeGratificacion;
+        } else {
+            gratificacion = calculo25;
+        }
+    }
+    document.getElementById('gratificacion').value = formatoMoneda(gratificacion).replace('$', '');
+
+    // Total imponible (base para descuentos previsionales)
+    const totalImponible = sueldoBase + totalHorasExtras + gratificacion + comision + bonos;
+
+    // Calcular descuentos previsionales
+    const tasaAFP = parseFloat(document.getElementById('afp').value);
+    const tasaSalud = parseFloat(document.getElementById('salud').value);
+
+    const descuentoAFP = Math.round(totalImponible * (tasaAFP / 100));
+    const descuentoSalud = Math.round(totalImponible * (tasaSalud / 100));
+    
+    // Fondo de Cesantía (Trabajador)
+    // Indefinido: 0.6%, Plazo Fijo: 0%
+    let tasaCesantia = 0;
+    if (tipoContrato === 'indefinido' || tipoContrato === 'partTime') {
+        tasaCesantia = 0.006;
+    }
+    const fondoCesantia = Math.round(totalImponible * tasaCesantia);
+
+    // Cargas familiares (valor referencial 2026)
+    const cargas = parseInt(document.getElementById('cargas').value) || 0;
+    const valorCarga = 13702; // Valor referencial por carga
+    const totalCargas = cargas * valorCarga;
+
+    // Descuentos adicionales
+    const prestamoCaja = obtenerValor('prestamoCaja');
+    const prestamoEmpresa = obtenerValor('prestamoEmpresa');
+    const anticipos = obtenerValor('anticipos');
+    const retencionJudicial = obtenerValor('retencionJudicial');
+
+    // Cálculo de impuesto segunda categoría (simplificado)
+    let impuesto2daCategoria = 0;
+    const baseImponible = totalImponible - descuentoAFP - descuentoSalud;
+    if (baseImponible > 916777) {
+        impuesto2daCategoria = Math.round((baseImponible - 916777) * 0.04);
+    }
+
+    // Totales
+    const totalHaberes = totalImponible + movilizacion + colacion + viaticos + desgasteHerramientas + totalCargas;
+    const totalDescuentos = descuentoAFP + descuentoSalud + fondoCesantia + impuesto2daCategoria +
+                           prestamoCaja + prestamoEmpresa + anticipos + retencionJudicial;
+    const liquidoPagar = totalHaberes - totalDescuentos;
+
+    // Aportes empleador (para referencia)
+    const SIS = Math.round(totalImponible * 0.0193); // 1.93%
+    
+    // AFC Empleador
+    // Indefinido: 2.4%, Plazo Fijo: 3.0%
+    let tasaAFCEmpleador = (tipoContrato === 'indefinido' || tipoContrato === 'partTime') ? 0.024 : 0.030;
+    const AFC = Math.round(totalImponible * tasaAFCEmpleador);
+    
+    // Mutual / ISL: Base 0.90% + Ley Sanna 0.03% + Adicional
+    const tasaAdicionalMutual = parseFloat(document.getElementById('tasaMutual').value) || 0;
+    const tasaTotalMutual = 0.93 + tasaAdicionalMutual;
+    const ISL = Math.round(totalImponible * (tasaTotalMutual / 100));
+
+    const totalEmpleador = SIS + AFC + ISL;
+    const costoTotalEmpresa = totalImponible + totalEmpleador + movilizacion + colacion + totalCargas;
+    const totalDescuentosMasAportes = totalDescuentos + totalEmpleador;
+
+    // Generar tabla de liquidación
+    generarTablaLiquidacion({
+        diasTrabajados: document.getElementById('diasTrabajados').value,
+        tipoContrato,
+        tasaCesantia,
+        tasaTotalMutual,
+        tasaAFCEmpleador,
+        sueldoBase,
+        horasExtras,
+        valorHoraExtra,
+        totalHorasExtras,
+        gratificacion,
+        comision,
+        bonos,
+        movilizacion,
+        colacion,
+        viaticos,
+        desgasteHerramientas,
+        totalCargas,
+        totalImponible,
+        totalHaberes,
+        descuentoAFP,
+        descuentoSalud,
+        fondoCesantia,
+        impuesto2daCategoria,
+        prestamoCaja,
+        prestamoEmpresa,
+        anticipos,
+        retencionJudicial,
+        totalDescuentos,
+        liquidoPagar,
+        SIS,
+        AFC,
+        ISL,
+        totalEmpleador,
+        costoTotalEmpresa,
+        totalDescuentosMasAportes
+    });
+}
+
+function generarTablaLiquidacion(calc) {
+    const tabla = document.getElementById('tablaLiquidacion');
+
+    tabla.innerHTML = `
+        <!-- ENCABEZADO -->
+        <tr class="section-header">
+            <td colspan="2">HABERES (Ingresos)</td>
+        </tr>
+        <tr>
+            <td>Días trabajados: ${calc.diasTrabajados}</td>
+            <td class="text-end">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>Sueldo Base</td>
+            <td class="text-end">${formatoMoneda(calc.sueldoBase)}</td>
+        </tr>
+        ${calc.totalHorasExtras > 0 ? `
+        <tr>
+            <td>Horas Extras (${calc.horasExtras} hrs × ${formatoMoneda(calc.valorHoraExtra)})</td>
+            <td class="text-end">${formatoMoneda(calc.totalHorasExtras)}</td>
+        </tr>
+        ` : ''}
+        <tr>
+            <td>Gratificación Legal (25%)</td>
+            <td class="text-end">${formatoMoneda(calc.gratificacion)}</td>
+        </tr>
+        ${calc.comision > 0 ? `
+        <tr>
+            <td>Comisión</td>
+            <td class="text-end">${formatoMoneda(calc.comision)}</td>
+        </tr>
+        ` : ''}
+        ${calc.bonos > 0 ? `
+        <tr>
+            <td>Bonos Gestión/Producción</td>
+            <td class="text-end">${formatoMoneda(calc.bonos)}</td>
+        </tr>
+        ` : ''}
+        <tr class="total-row">
+            <td><strong>TOTAL IMPONIBLE</strong></td>
+            <td class="text-end"><strong>${formatoMoneda(calc.totalImponible)}</strong></td>
+        </tr>
+        ${calc.movilizacion > 0 ? `
+        <tr>
+            <td>Asignación de Movilización</td>
+            <td class="text-end">${formatoMoneda(calc.movilizacion)}</td>
+        </tr>
+        ` : ''}
+        ${calc.colacion > 0 ? `
+        <tr>
+            <td>Asignación de Colación</td>
+            <td class="text-end">${formatoMoneda(calc.colacion)}</td>
+        </tr>
+        ` : ''}
+        ${calc.viaticos > 0 ? `
+        <tr>
+            <td>Viáticos</td>
+            <td class="text-end">${formatoMoneda(calc.viaticos)}</td>
+        </tr>
+        ` : ''}
+        ${calc.desgasteHerramientas > 0 ? `
+        <tr>
+            <td>Desgaste Herramientas / Caja</td>
+            <td class="text-end">${formatoMoneda(calc.desgasteHerramientas)}</td>
+        </tr>
+        ` : ''}
+        ${calc.totalCargas > 0 ? `
+        <tr>
+            <td>Cargas Familiares</td>
+            <td class="text-end">${formatoMoneda(calc.totalCargas)}</td>
+        </tr>
+        ` : ''}
+        <tr class="total-row">
+            <td><strong>TOTAL HABERES</strong></td>
+            <td class="text-end"><strong>${formatoMoneda(calc.totalHaberes)}</strong></td>
+        </tr>
+
+        <!-- DESCUENTOS -->
+        <tr class="section-header">
+            <td colspan="2">DESCUENTOS</td>
+        </tr>
+        <tr>
+            <td>Previsión AFP (${document.getElementById('afp').value}%)</td>
+            <td class="text-end">${formatoMoneda(calc.descuentoAFP)}</td>
+        </tr>
+        <tr>
+            <td>Salud ${document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text}</td>
+            <td class="text-end">${formatoMoneda(calc.descuentoSalud)}</td>
+        </tr>
+        <tr>
+            <td>Fondo de Cesantía (${(calc.tasaCesantia * 100).toFixed(1)}%)</td>
+            <td class="text-end">${formatoMoneda(calc.fondoCesantia)}</td>
+        </tr>
+        ${calc.impuesto2daCategoria > 0 ? `
+        <tr>
+            <td>Impuesto Segunda Categoría</td>
+            <td class="text-end">${formatoMoneda(calc.impuesto2daCategoria)}</td>
+        </tr>
+        ` : ''}
+        ${calc.prestamoCaja > 0 ? `
+        <tr>
+            <td>Préstamo Caja</td>
+            <td class="text-end">${formatoMoneda(calc.prestamoCaja)}</td>
+        </tr>
+        ` : ''}
+        ${calc.prestamoEmpresa > 0 ? `
+        <tr>
+            <td>Préstamo Empresa</td>
+            <td class="text-end">${formatoMoneda(calc.prestamoEmpresa)}</td>
+        </tr>
+        ` : ''}
+        ${calc.anticipos > 0 ? `
+        <tr>
+            <td>Anticipos</td>
+            <td class="text-end">${formatoMoneda(calc.anticipos)}</td>
+        </tr>
+        ` : ''}
+        ${calc.retencionJudicial > 0 ? `
+        <tr>
+            <td>Retención Judicial</td>
+            <td class="text-end">${formatoMoneda(calc.retencionJudicial)}</td>
+        </tr>
+        ` : ''}
+        <tr class="total-row">
+            <td><strong>TOTAL DESCUENTOS</strong></td>
+            <td class="text-end"><strong>${formatoMoneda(calc.totalDescuentos)}</strong></td>
+        </tr>
+
+        <!-- LIQUIDO A PAGAR -->
+        <tr class="liquido-row">
+            <td><strong>LÍQUIDO A PAGAR</strong></td>
+            <td class="text-end"><strong>${formatoMoneda(calc.liquidoPagar)}</strong></td>
+        </tr>
+
+        <!-- APORTES EMPLEADOR -->
+        <tr class="section-header">
+            <td colspan="2">APORTES EMPLEADOR (Referencia)</td>
+        </tr>
+        <tr>
+            <td>SIS (Seguro Invalidez y Sobrevivencia) 1.93%</td>
+            <td class="text-end">${formatoMoneda(calc.SIS)}</td>
+        </tr>
+        <tr>
+            <td>AFC (Seguro de Cesantía Empleador) ${(calc.tasaAFCEmpleador * 100).toFixed(1)}%</td>
+            <td class="text-end">${formatoMoneda(calc.AFC)}</td>
+        </tr>
+        <tr>
+            <td>Mutual / ISL (Accidentes) ${(calc.tasaTotalMutual).toFixed(2)}%</td>
+            <td class="text-end">${formatoMoneda(calc.ISL)}</td>
+        </tr>
+        <tr class="total-row">
+            <td><strong>TOTAL APORTE EMPLEADOR</strong></td>
+            <td class="text-end"><strong>${formatoMoneda(calc.totalEmpleador)}</strong></td>
+        </tr>
+        <tr class="cost-highlight-row">
+            <td>COSTO TOTAL EMPRESA</td>
+            <td class="text-end">${formatoMoneda(calc.costoTotalEmpresa)}</td>
+        </tr>
+        <tr class="cost-highlight-row">
+            <td>TOTAL RETENCIONES Y APORTES</td>
+            <td class="text-end">${formatoMoneda(calc.totalDescuentosMasAportes)}</td>
+        </tr>
+    `;
+}
+
+function actualizarTipoContrato(calcularSueldo = true) {
+    const tipo = document.getElementById('tipoContrato').value;
+    const divJornada = document.getElementById('divJornadaSemanal');
+    const divPartTime = document.getElementById('divHorasPartTime');
+    
+    if (tipo === 'partTime') {
+        divJornada.style.display = 'none';
+        divPartTime.style.display = 'block';
+        if (calcularSueldo) calcularSueldoPartTime();
+    } else {
+        divJornada.style.display = 'block';
+        divPartTime.style.display = 'none';
+        if (calcularSueldo) calcular();
+    }
+}
+
+function calcularSueldoPartTime() {
+    const horas = parseFloat(document.getElementById('horasPartTime').value) || 0;
+    const sueldoMinimo = 539000;
+    const proporcional = Math.round((sueldoMinimo / 44) * horas);
+    document.getElementById('sueldoBase').value = new Intl.NumberFormat('es-CL').format(proporcional);
+    calcular();
+}
+
+// === PERSISTENCIA DE DATOS ===
+function guardarEstadoLocal() {
+    const inputs = document.querySelectorAll('input, select');
+    const estado = {};
+    inputs.forEach(input => {
+        if (input.id) {
+            estado[input.id] = input.value;
+        }
+    });
+    localStorage.setItem('liquidadorData', JSON.stringify(estado));
+}
+
+function cargarEstadoLocal() {
+    const guardado = localStorage.getItem('liquidadorData');
+    if (guardado) {
+        try {
+            const estado = JSON.parse(guardado);
+            Object.keys(estado).forEach(key => {
+                const input = document.getElementById(key);
+                if (input) {
+                    input.value = estado[key];
+                }
+            });
+            actualizarTipoContrato(false);
+            // Recalcular con los datos cargados
+            calcular();
+        } catch (e) {
+            console.error("Error al cargar datos locales", e);
+        }
+    }
+}
+
+// Agregar listeners para guardar automáticamente
+function iniciarListenersPersistencia() {
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.addEventListener('input', guardarEstadoLocal);
+        input.addEventListener('change', guardarEstadoLocal);
+    });
+}
+
+// === FUNCIONES GUARDAR/CARGAR ===
+function guardarDatos() {
+    const datos = {
+        empresa: document.getElementById('empresa').value,
+        rutEmpresa: document.getElementById('rutEmpresa').value,
+        direccionEmpresa: document.getElementById('direccionEmpresa').value,
+        nombreTrabajador: document.getElementById('nombreTrabajador').value,
+        rutTrabajador: document.getElementById('rutTrabajador').value,
+        cargo: document.getElementById('cargo').value,
+        tipoContrato: document.getElementById('tipoContrato').value,
+        mesLiquidacion: document.getElementById('mesLiquidacion').value,
+        diasTrabajados: document.getElementById('diasTrabajados').value,
+        sueldoBase: document.getElementById('sueldoBase').value,
+        jornadaSemanal: document.getElementById('jornadaSemanal').value,
+        horasPartTime: document.getElementById('horasPartTime').value,
+        incluirGratificacion: document.getElementById('incluirGratificacion').value,
+        horasExtras: document.getElementById('horasExtras').value,
+        factorHoraExtra: document.getElementById('factorHoraExtra').value,
+        comision: document.getElementById('comision').value,
+        bonos: document.getElementById('bonos').value,
+        movilizacion: document.getElementById('movilizacion').value,
+        colacion: document.getElementById('colacion').value,
+        viaticos: document.getElementById('viaticos').value,
+        desgasteHerramientas: document.getElementById('desgasteHerramientas').value,
+        afp: document.getElementById('afp').value,
+        salud: document.getElementById('salud').value,
+        cargas: document.getElementById('cargas').value,
+        tasaMutual: document.getElementById('tasaMutual').value,
+        prestamoCaja: document.getElementById('prestamoCaja').value,
+        prestamoEmpresa: document.getElementById('prestamoEmpresa').value,
+        anticipos: document.getElementById('anticipos').value,
+        retencionJudicial: document.getElementById('retencionJudicial').value
+    };
+
+    const blob = new Blob([JSON.stringify(datos, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `liquidacion_${datos.nombreTrabajador || 'trabajador'}_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+}
+
+function cargarDatos(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const datos = JSON.parse(e.target.result);
+            Object.keys(datos).forEach(key => {
+                const elemento = document.getElementById(key);
+                if (elemento) elemento.value = datos[key];
+            });
+            calcular();
+        } catch (error) {
+            alert('Error al cargar el archivo');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function limpiarFormulario() {
+    if (confirm('¿Está seguro de que desea limpiar todos los datos?')) {
+        localStorage.removeItem('liquidadorData'); // Borrar persistencia
+        document.getElementById('trabajadorForm').reset();
+        document.getElementById('diasTrabajados').value = '30';
+        document.getElementById('tipoContrato').value = 'indefinido';
+        document.getElementById('jornadaSemanal').value = '44';
+        document.getElementById('horasPartTime').value = '20';
+        document.getElementById('incluirGratificacion').value = 'true';
+        document.getElementById('horasExtras').value = '0';
+        document.getElementById('factorHoraExtra').value = '1.5';
+        document.getElementById('cargas').value = '0';
+        document.getElementById('tasaMutual').value = '0';
+        document.getElementById('afp').selectedIndex = 0;
+        document.getElementById('salud').selectedIndex = 0;
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.value = '';
+        });
+        document.getElementById('tablaLiquidacion').innerHTML = '<tr><td colspan="2" class="text-center text-muted">Complete los datos y presione Calcular</td></tr>';
+        actualizarTipoContrato(false);
+    }
+}
+
+// === IMPRESIÓN PROFESIONAL ===
+function imprimirPDF() {
+    // 1. Preparar datos del encabezado de impresión
+    document.getElementById('print_empresa').textContent = document.getElementById('empresa').value || '---';
+    document.getElementById('print_rutEmpresa').textContent = document.getElementById('rutEmpresa').value || '---';
+    document.getElementById('print_direccion').textContent = document.getElementById('direccionEmpresa').value || '---';
+    
+    document.getElementById('print_nombreTrabajador').textContent = document.getElementById('nombreTrabajador').value || '---';
+    document.getElementById('print_rutTrabajador').textContent = document.getElementById('rutTrabajador').value || '---';
+    document.getElementById('print_cargo').textContent = document.getElementById('cargo').value || '---';
+    
+    const selectContrato = document.getElementById('tipoContrato');
+    document.getElementById('print_tipoContrato').textContent = selectContrato.options[selectContrato.selectedIndex].text;
+    document.getElementById('print_diasTrabajados').textContent = document.getElementById('diasTrabajados').value || '---';
+    
+    const mesLiq = document.getElementById('mesLiquidacion').value;
+    document.getElementById('print_fecha').textContent = mesLiq ? mesLiq : new Date().toLocaleDateString('es-CL');
+
+    // 2. Cambiar título del documento para el nombre del archivo PDF
+    const nombreT = document.getElementById('nombreTrabajador').value || 'Trabajador';
+    const rutT = document.getElementById('rutTrabajador').value || 'RUT';
+    const nombreE = document.getElementById('empresa').value || 'Empresa';
+    const fechaArchivo = mesLiq ? mesLiq : new Date().toLocaleDateString('es-CL').replace(/\//g, '-');
+    
+    const tituloOriginal = document.title;
+    // Formato solicitado: Nombre Trabajador y RUT_Nombre Empresa_ Fecha
+    document.title = `${nombreT} y ${rutT}_${nombreE}_ ${fechaArchivo}`;
+
+    // 3. Imprimir
+    window.print();
+
+    // 4. Restaurar título
+    document.title = tituloOriginal;
+}
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    const hoy = new Date();
+    if (!localStorage.getItem('liquidadorData')) {
+        document.getElementById('mesLiquidacion').value = hoy.toISOString().slice(0, 7);
+    }
+    cargarEstadoLocal();
+    iniciarListenersPersistencia();
+});
+</script>
+
+</body>
+</html>
