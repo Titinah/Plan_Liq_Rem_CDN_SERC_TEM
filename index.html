@@ -273,6 +273,13 @@
                     <!-- Configuración -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
+                            <label class="form-label">Sueldo Mínimo (Ley N°21.751)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="sueldoMinimo" value="539.000" onkeyup="formatoMonedaInput(this); calcular();">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">Días Trabajados</label>
                             <input type="number" class="form-control" id="diasTrabajados" value="30" oninput="calcular()">
                         </div>
@@ -286,7 +293,7 @@
                             </select>
                         </div>
                         <div class="col-md-4" id="divHorasPartTime" style="display: none;">
-                            <label class="form-label">Horas (Part-time)</label>
+                            <label class="form-label">Horas (Part-time) (30 o menos)</label>
                             <input type="number" class="form-control" id="horasPartTime" value="20" min="1" max="44" oninput="calcularSueldoPartTime()">
                         </div>
                         <div class="col-md-4">
@@ -596,6 +603,7 @@ function formatoMoneda(numero) {
 function calcular() {
     // Obtener valores de haberes
     const sueldoBase = obtenerValor('sueldoBase');
+    const sueldoMinimo = obtenerValor('sueldoMinimo');
     const horasExtras = parseInt(document.getElementById('horasExtras').value) || 0;
     const tipoContrato = document.getElementById('tipoContrato').value;
     
@@ -626,8 +634,8 @@ function calcular() {
     const totalHorasExtras = horasExtras * valorHoraExtra;
 
     // Calcular gratificación legal (25% de los haberes imponibles)
-    // Tope legal: 4.75 * IMM / 12. Usando IMM de $539.000 (ref. 2026), el tope es $213.354.
-    const topeGratificacion = 213354;
+    // Tope legal: 4.75 * IMM / 12.
+    const topeGratificacion = Math.round((4.75 * sueldoMinimo) / 12);
     const incluirGratificacion = document.getElementById('incluirGratificacion').value === 'true';
     let gratificacion = 0;
 
@@ -926,7 +934,7 @@ function actualizarTipoContrato(calcularSueldo = true) {
 
 function calcularSueldoPartTime() {
     const horas = parseFloat(document.getElementById('horasPartTime').value) || 0;
-    const sueldoMinimo = 539000;
+    const sueldoMinimo = obtenerValor('sueldoMinimo');
     const proporcional = Math.round((sueldoMinimo / 44) * horas);
     document.getElementById('sueldoBase').value = new Intl.NumberFormat('es-CL').format(proporcional);
     calcular();
@@ -1037,6 +1045,7 @@ function cargarDatos(input) {
 
 function limpiarFormulario() {
     if (confirm('¿Está seguro de que desea limpiar todos los datos?')) {
+        const immActual = document.getElementById('sueldoMinimo').value; // Guardar valor actual
         localStorage.removeItem('liquidadorData'); // Borrar persistencia
         document.getElementById('trabajadorForm').reset();
         document.getElementById('diasTrabajados').value = '30';
@@ -1053,8 +1062,10 @@ function limpiarFormulario() {
         document.querySelectorAll('input[type="text"]').forEach(input => {
             input.value = '';
         });
+        document.getElementById('sueldoMinimo').value = immActual; // Restaurar valor
         document.getElementById('tablaLiquidacion').innerHTML = '<tr><td colspan="2" class="text-center text-muted">Complete los datos y presione Calcular</td></tr>';
         actualizarTipoContrato(false);
+        guardarEstadoLocal(); // Guardar estado limpio con IMM preservado
     }
 }
 
